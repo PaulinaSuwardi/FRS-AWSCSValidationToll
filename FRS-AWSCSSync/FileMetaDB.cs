@@ -12,13 +12,15 @@ namespace FRS_AWSCSSync
     {
         private int _reconnectCount;
         private string _dbConnStr;
+        private int _queryTimeoutSecs;
         private static ILog _logger;
 
-        public FileMetaDB(String connectionStr, int reconnectCount)
+        public FileMetaDB(String connectionStr, int reconnectCount, int queryTimeoutSecs)
         {
             _logger = LogManager.GetLogger(String.Empty);
             _dbConnStr = connectionStr;
             _reconnectCount = reconnectCount;
+            _queryTimeoutSecs = queryTimeoutSecs;
         }
 
         public List<String> GetSHA1List(int dataCount, string readerName)
@@ -36,6 +38,7 @@ namespace FRS_AWSCSSync
                         using (SqlCommand cmd = new SqlCommand("spValidateGetSHA1List", conn))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.CommandTimeout = _queryTimeoutSecs;
                             cmd.Parameters.Add(new SqlParameter("@numberOfData", dataCount));
                             cmd.Parameters.Add(new SqlParameter("@readerName", readerName));
 
@@ -74,6 +77,7 @@ namespace FRS_AWSCSSync
                         using (SqlCommand cmd = new SqlCommand("spValidateAWSResult", conn))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.CommandTimeout = _queryTimeoutSecs;
                             cmd.Parameters.Add(new SqlParameter("@sha1", sha1));
                             cmd.Parameters.Add(new SqlParameter("@s3Result", s3Result));
                             cmd.Parameters.Add(new SqlParameter("@dynamoResult", dynamoResult));
@@ -106,6 +110,7 @@ namespace FRS_AWSCSSync
                         using (SqlCommand cmd = new SqlCommand("spValidateDeleteLastMark", conn))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.CommandTimeout = _queryTimeoutSecs;
                             cmd.ExecuteScalar();
                             return true;
                         }

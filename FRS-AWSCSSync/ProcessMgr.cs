@@ -26,7 +26,7 @@ namespace FRS_AWSCSSync
         public ProcessMgr()
         {
             _logger = LogManager.GetLogger(String.Empty);
-            _fileMetaDB = new FileMetaDB(AppConfigClass.DBConnectionStr, AppConfigClass.DBReconnectCount);
+            _fileMetaDB = new FileMetaDB(AppConfigClass.DBConnectionStr, AppConfigClass.DBReconnectCount, AppConfigClass.QueryTimeoutSecs);
             _s3Client = new S3ClientWrapper(RegionEndpoint.USEast1, "cs-trend-prod");
             _dynamoClient = new DynamoClientWrapper(RegionEndpoint.USEast1, "cs-file-metadata-prod", "IX_SHA1");
             _workQueue = new BlockingCollection<String>();

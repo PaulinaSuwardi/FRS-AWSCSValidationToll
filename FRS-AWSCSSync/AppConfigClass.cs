@@ -40,6 +40,14 @@ namespace FRS_AWSCSSync
             }
         }
 
+        public static int QueryTimeoutSecs
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["QueryTimeoutSecs"]);
+            }
+        }
+
         public static int NumberOfDataPerDBQuery
         {
             get
